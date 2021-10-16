@@ -1,7 +1,7 @@
 #ifndef ROBOTCONFIG_H_
 #define ROBOTCONFIG_H_
 const double PI = 3.1415926;
-#include "eigen3/Eigen/Dense"
+#include <Eigen/Dense>
 using namespace Eigen;
 namespace SRobot
 { 

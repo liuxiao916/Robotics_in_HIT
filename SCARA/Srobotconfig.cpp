@@ -1,6 +1,6 @@
 ﻿
 #include "Srobotconfig.h"
-#include "eigen3/Eigen/Dense"
+#include <Eigen/Dense>
 
 using namespace std;
 
@@ -8,9 +8,9 @@ namespace SRobot
 {
     SCARA Scara(250,250);
 	//初始化TransMatrix
-	double mTransMatrix[16] {0};
-    double angle[4]{0};
-    double pose[6]{0};
+	double mTransMatrix[16]={0};
+    double angle[4]={0};
+    double pose[6]={0};
 
 	//只使用一种姿态
 	bool mConfig = 1;
@@ -63,7 +63,7 @@ namespace SRobot
 
 	void GetJointEndPos(double &x, double &y, double &z, double &yaw, double &pitch, double &roll)
 	{
-        robotForward(const double* angle, double* TransVector, bool mconfig)
+        
 	}
 
 
