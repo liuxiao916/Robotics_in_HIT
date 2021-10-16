@@ -63,7 +63,7 @@ namespace SRobot
 
 	void GetJointEndPos(double &x, double &y, double &z, double &yaw, double &pitch, double &roll)
 	{
-
+        robotForward(const double* angle, double* TransVector, bool mconfig)
 	}
 
 

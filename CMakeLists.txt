@@ -8,4 +8,4 @@ include_directories(..)
 include_directories(.)
 include_directories(/home/liuxiao/code/SCARA)
 
-add_executable(Scara main.cpp)
+add_executable(Scara ./main.cpp)

@@ -1,3 +1,0 @@
-/home/liuxiao/code/SCARA/build/CMakeFiles/rebuild_cache.dir
-/home/liuxiao/code/SCARA/build/CMakeFiles/Scara.dir
-/home/liuxiao/code/SCARA/build/CMakeFiles/edit_cache.dir

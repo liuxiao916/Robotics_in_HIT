@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/home/liuxiao/code/SCARA/build",
-  "command": "/usr/bin/x86_64-linux-gnu-g++-7  -I/usr/local/include/eigen3 -I/home/liuxiao/code/SCARA/.. -I/home/liuxiao/code/SCARA/. -I/home/liuxiao/code/SCARA -g -o CMakeFiles/Scara.dir/main.cpp.o -c /home/liuxiao/code/SCARA/main.cpp",
-  "file": "/home/liuxiao/code/SCARA/main.cpp"
-}
-]
