@@ -9,6 +9,8 @@ namespace SRobot
     SCARA Scara(250,250);
 	//初始化TransMatrix
 	double mTransMatrix[16] {0};
+    double angle[4]{0};
+    double pose[6]{0};
 
 	//只使用一种姿态
 	bool mConfig = 1;
@@ -39,17 +41,24 @@ namespace SRobot
 	
 	void SetRobotEndPos(double x, double y, double z, double yaw, double pitch, double roll)
 	{
-
+        pose[0] = x;
+        pose[1] = y;
+        pose[2] = z;
+        pose[3] = yaw;
+        pose[4] = pitch;
+        pose[5] = roll;
 	}
 
 	void GetJointAngles(double &angle1, double &angle2, double &angle3, double &angle4)
 	{
-
 	}
 
 	void SetRobotJoint(double angle1, double angle2, double angle3, double angle4)
 	{
-
+        angle[0] = angle1;
+        angle[1] = angle2;
+        angle[2] = angle3;
+        angle[3] = angle4;
 	}
 
 	void GetJointEndPos(double &x, double &y, double &z, double &yaw, double &pitch, double &roll)
