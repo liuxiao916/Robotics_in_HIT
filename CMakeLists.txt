@@ -6,4 +6,6 @@ MESSAGE( STATUS "this var key = ${EIGEN3_INCLUDE_DIR}.")
 INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIR})
 include_directories(./SCARA)
 
-add_executable(Scara Scara/main.cpp Scara/Srobotconfig.cpp)
+
+add_executable(Scara ./SCARA/main.cpp ./SCARA/Srobotconfig.cpp)
+

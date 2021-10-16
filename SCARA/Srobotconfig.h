@@ -32,22 +32,15 @@ namespace SRobot
             w.block<3,1>(0,0) << 0, 0, 1; 
             w.block<3,1>(0,1) << 0, 0, 1; 
             w.block<3,1>(0,2) << 0, 0, 0;
-            w.block<3,1>(0,3) << 0, 0, 1;  
+            w.block<3,1>(0,3) << 0, 0, -1;  
             for(int i =0; i<4; i++){
                 v.col(i) = -w.col(i).cross(q.col(i));
             }
             v.col(2) << 0, 0 ,1;  //no rotation
-            Vector3d ea(0,180,180);
-            Matrix3d rotate;
-            Eigen::AngleAxisd yawAngle(AngleAxisd(ea(0),Vector3d::UnitZ()));
-            Eigen::AngleAxisd pitchAngle(AngleAxisd(ea(1)/180*PI,Vector3d::UnitY()));
-            Eigen::AngleAxisd rollAngle(AngleAxisd(ea(2)/180*PI,Vector3d::UnitZ()));
-            rotate = yawAngle*pitchAngle*rollAngle;
             G0 << 1,0,0,a1+a2,
-                0,1,0,0,
-                0,0,1,0,
+                0,-1,0,0,
+                0,0,-1,0,
                 0,0,0,1; 
-            G0.block<3,3>(0,0) = rotate;
         };
 		~SCARA() {};
 

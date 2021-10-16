@@ -66,25 +66,6 @@ namespace SRobot
         mangle[1] = angle2;
         mangle[2] = angle3;
         mangle[3] = angle4;
-        Matrix3d R,R1,R2,R4;
-        R << cos((angle1+angle2+angle4)/180*PI), -sin((angle1+angle2+angle4)/180*PI), 0,
-             sin((angle1+angle2+angle4)/180*PI),cos((angle1+angle2+angle4)/180*PI),0,
-             0,0,1;
-        // R1 << cos(angle1/180*PI), -sin(angle1/180*PI), 0,
-        //     sin(angle1/180*PI),cos(angle1/180*PI),0,
-        //     0,0,1;
-        // R2 << cos(angle2/180*PI), -sin(angle2/180*PI), 0,
-        //     sin(angle2/180*PI),cos(angle2/180*PI),0,
-        //     0,0,1;
-        // R4 << cos(angle4/180*PI), -sin(angle4/180*PI), 0,
-        //     sin(angle4/180*PI),cos(angle4/180*PI),0,
-        //     0,0,1;
-        cout<<R;
-        cout<<endl;
-        // cout<<R2;
-        // cout<<endl;
-        // cout<<R4;
-        // cout<<endl;
 	}
 
 	void GetJointEndPos(double &x, double &y, double &z, double &yaw, double &pitch, double &roll)
@@ -103,28 +84,9 @@ namespace SRobot
         z = T(2,3);
         R = T.block<3,3>(0,0);
         Euler = R.eulerAngles(2,1,2);
-
-        double tmp = sqrt(R(2, 0) * R(2, 0) + R(2, 1) * R(2, 1));
-		yaw = atan2(R(1, 2), R(0, 2)) * 180 / PI;
-		pitch = atan2(tmp, R(2, 2)) * 180 / PI;
-		roll = atan2(R(2, 1), -R(2, 0)) * 180 / PI;
-
-        // std::cout << x;
-        // std::cout << std::endl;
-        // std::cout << y;
-        // std::cout << std::endl;
-        // std::cout << z;
-        std::cout<<R;
-        std::cout << std::endl;
-        std::cout << Euler/3.14*180; 
-        // std::cout << std::endl;
-        // std::cout << yaw;
-        // std::cout << std::endl;
-        // std::cout << pitch;
-        // std::cout << std::endl;
-        // std::cout << roll;
-        // std::cout << std::endl;
-
+        yaw = Euler(0)/PI*180;
+        pitch = Euler(1)/PI*180;
+        roll = Euler(2)/PI*180;
 	}
 
 
@@ -160,11 +122,9 @@ namespace SRobot
 	void robotForward(const double* q, double* TransVector, bool mconfig)
 	{	
         Matrix4d T=Matrix4d::Identity();
-        cout<<Scara.G0;
         cout<<endl;
 		for(int i=0;i<4;i++){
             T = T * R2SE3(Scara.v.col(i),Scara.w.col(i),i,q[i]);
-            //cout<<R2SE3(Scara.v.col(i),Scara.w.col(i),i,q[i])<<endl;
         }
         T = T*Scara.G0;
         for (int i=0; i<4; i++){
