@@ -44,6 +44,14 @@ namespace SRobot
         }
         return SE3;
     }
+
+    Matrix4d GetInverse(Matrix4d T)
+    {
+        Matrix4d T_inv = Matrix4d::Identity();
+        T_inv.block<3,3>(0,0) = T.block<3,3>(0,0).transpose();
+        T_inv.block<3,1>(0,3) = -T.block<3,3>(0,0).transpose() * T.block<3,1>(0,3);
+        return T_inv;
+    }
 	
     void Subproblem1 (Vector3d r, Vector3d p, Vector3d q, Vector3d w, double &theta)
     {
@@ -57,7 +65,7 @@ namespace SRobot
         theta = atan2(w.transpose()*(u_dot.cross(v_dot)),u_dot.transpose()*v_dot) * 180 / PI;
     }
 
-    //SCRAR没有用 写一下当练习
+//     //SCRAR没有用 写一下当练习
     void Subproblem2 (Vector3d r, Vector3d p, Vector3d q, Vector3d w1, Vector3d w2, vector<double> &theta1, vector<double> &theta2 )
     {
         Vector3d u,v;
@@ -141,6 +149,10 @@ namespace SRobot
 	void GetJointAngles(double &angle1, double &angle2, double &angle3, double &angle4)
 	{
         robotBackward(mTransMatrix, mConfig, mangle);
+        angle1 = mangle[0];
+        angle2 = mangle[1];
+        angle3 = mangle[2];
+        angle4 = mangle[3];
 	}
 
 	void SetRobotJoint(double angle1, double angle2, double angle3, double angle4)
@@ -188,7 +200,41 @@ namespace SRobot
 	***********************************************************************/
 	void robotBackward(const double* TransVector, bool mconfig, double* theta)
 	{
-		
+        //get angle3
+		theta[2] = TransVector[11];
+
+        Matrix4d G, T;
+        for (int i=0; i<4; i++){
+            for(int j=0; j<4; j++){
+                T(i,j) = TransVector[4*i+j];
+            }
+        }
+        G = T*GetInverse(Scara.G0);
+        //Subproblem3 to get angle 2
+        Matrix4d T3 = Matrix4d::Identity();
+        T3(2,3) = theta[2];
+        Vector4d q3(500,0,0,1);
+        Vector4d q1(0,0,0,1);
+
+        double delta = (G*q3).norm();
+        Vector4d p = T3*q3;
+        Vector4d q2(250,0,0,1);
+        vector<double> angle2;
+        Subproblem3(q2.head(3),p.head(3),q1.head(3),Scara.w.col(1),delta,angle2);
+        theta[1] = angle2[mconfig];
+        cout << angle2[0]<< " "<<angle2[1]<<endl;
+        //Subproblem1 to get angle 1
+        Matrix4d T2 = R2SE3(Scara.v.col(1),Scara.w.col(1), 1, theta[1]);
+        Vector4d q = G*q3;
+        p =T2*T3*q3;
+        Subproblem1(q1.head(3),p.head(3),q.head(3),Scara.w.col(0),theta[0]);
+        cout <<theta[0]<<endl;
+        //Subproblem1 to get angle 4
+        Matrix4d T1 = R2SE3(Scara.v.col(0),Scara.w.col(0), 0, theta[0]);
+        q = GetInverse(T3)*GetInverse(T2)*GetInverse(T1)*G*q1;
+        p = q1;
+        Subproblem1(q3.head(3),p.head(3),q.head(3),Scara.w.col(3),theta[3]);
+        cout <<theta[3]<<endl;
 	}
 
 	/********************************************************************
