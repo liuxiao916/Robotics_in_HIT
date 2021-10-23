@@ -201,7 +201,7 @@ namespace SRobot
 	void robotBackward(const double* TransVector, bool mconfig, double* theta)
 	{
         //get angle3
-		theta[2] = TransVector[11];
+		theta[2] = -TransVector[11];
 
         Matrix4d G, T;
         for (int i=0; i<4; i++){
@@ -222,19 +222,16 @@ namespace SRobot
         vector<double> angle2;
         Subproblem3(q2.head(3),p.head(3),q1.head(3),Scara.w.col(1),delta,angle2);
         theta[1] = angle2[mconfig];
-        cout << angle2[0]<< " "<<angle2[1]<<endl;
         //Subproblem1 to get angle 1
         Matrix4d T2 = R2SE3(Scara.v.col(1),Scara.w.col(1), 1, theta[1]);
         Vector4d q = G*q3;
         p =T2*T3*q3;
         Subproblem1(q1.head(3),p.head(3),q.head(3),Scara.w.col(0),theta[0]);
-        cout <<theta[0]<<endl;
         //Subproblem1 to get angle 4
         Matrix4d T1 = R2SE3(Scara.v.col(0),Scara.w.col(0), 0, theta[0]);
         q = GetInverse(T3)*GetInverse(T2)*GetInverse(T1)*G*q1;
         p = q1;
         Subproblem1(q3.head(3),p.head(3),q.head(3),Scara.w.col(3),theta[3]);
-        cout <<theta[3]<<endl;
 	}
 
 	/********************************************************************

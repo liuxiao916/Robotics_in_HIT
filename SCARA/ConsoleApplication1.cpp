@@ -4,42 +4,45 @@
 #include<iostream>
 #include<winsock.h>
 #include <conio.h>
+#include "Srobotconfig.h"
+#include<vector>
 #pragma comment(lib,"ws2_32.lib")
 using namespace std;
 using namespace Eigen;
-using namespace HLRobot;
+using namespace SRobot;
 
-void sendCmd(SOCKET& ser, Vector6d j) {
+typedef Matrix<double, 6, 1> Vector6d;
+void sendCmd(SOCKET& ser, Vector4d j) {
 
 	char cmd[128] = {};
-	sprintf_s(cmd, sizeof(cmd), "[4# p=%.3f,%.3f,%.3f,%.3f,%.3f,%.3f]", j(0), j(1), j(2), j(3), j(4), j(5));
-
+	sprintf_s(cmd, sizeof(cmd), "[9# j=%.3f,%.3f,%.3f,%.3f]", j(0), j(1), j(2), j(3));
 	int send_len, recv_len;
 	char recv_buf[200] = {};
 	send_len = send(ser, cmd, 200, 0);
 	recv_len = recv(ser, recv_buf, 200, 0);
 	cout << recv_buf << endl;
+	Sleep(500);
 
 	memset(cmd, 0, sizeof(cmd));
 	memset(recv_buf, 0, sizeof(recv_buf));
-	sprintf_s(cmd, sizeof(cmd), "[5# Move.Joint p]");
+	sprintf_s(cmd, sizeof(cmd), "[10# Move.Joint j]");
 	send_len = send(ser, cmd, 200, 0);
 	recv_len = recv(ser, recv_buf, 200, 0);
 	cout << recv_buf << endl;
 }
 
 void Task1(SOCKET& ser, const Vector6d& p1, const Vector6d& p2, const Vector6d& p3) {
-	Vector6d j;
+	Vector4d j;
 	SetRobotEndPos(p1(0), p1(1), p1(2), p1(3), p1(4), p1(5));
-	GetJointAngles(j(0), j(1), j(2), j(3), j(4), j(5));
+	GetJointAngles(j(0), j(1), j(2), j(3));
 	sendCmd(ser, j);
 	Sleep(500);
 	SetRobotEndPos(p2(0), p2(1), p2(2), p2(3), p2(4), p2(5));
-	GetJointAngles(j(0), j(1), j(2), j(3), j(4), j(5));
+	GetJointAngles(j(0), j(1), j(2), j(3));
 	sendCmd(ser, j);
 	Sleep(500);
 	SetRobotEndPos(p3(0), p3(1), p3(2), p3(3), p3(4), p3(5));
-	GetJointAngles(j(0), j(1), j(2), j(3), j(4), j(5));
+	GetJointAngles(j(0), j(1), j(2), j(3));
 	sendCmd(ser, j);
 	Sleep(500);
 }
@@ -50,23 +53,23 @@ void drawTriangle(SOCKET& ser, const Vector6d& p1, const Vector6d& p2, const Vec
 
 	// p1 -> p2
 	for (int i = 0; i < 6; i++) {
-		Vector6d tmp = p1 + i / 6 * (p2 - p1);
+		Vector6d tmp = p1 + double(i) / 6 * (p2 - p1);
 		p.emplace_back(tmp);
 	}
 	for (int i = 0; i < 6; i++) {
-		Vector6d tmp = p2 + i / 6 * (p3 - p2);
+		Vector6d tmp = p2 + double(i) / 6 * (p3 - p2);
 		p.emplace_back(tmp);
 	}
 	for (int i = 0; i < 6; i++) {
-		Vector6d tmp = p3 + i / 6 * (p1 - p3);
+		Vector6d tmp = p3 + double(i) / 6 * (p1 - p3);
 		p.emplace_back(tmp);
 	}
 
 	for (int i = 0; i < p.size(); i++) {
 		Vector6d p_ = p[i];
 		SetRobotEndPos(p_(0), p_(1), p_(2), p_(3), p_(4), p_(5));
-		Vector6d j;
-		GetJointAngles(j(0), j(1), j(2), j(3), j(4), j(5));
+		Vector4d j;
+		GetJointAngles(j(0), j(1), j(2), j(3));
 
 		sendCmd(ser, j);
 		Sleep(500);
@@ -78,16 +81,16 @@ void drawCircle(SOCKET& ser, Vector6d center, double r)
 	vector<Vector6d> p;
 	for (int i = 0; i < 36; i++) {
 		Vector6d tmp = center;
-		tmp(0) += r * cos(i / 36 * PI);
-		tmp(1) += r * sin(i / 36 * PI);
+		tmp(0) += r * cos(double(i) / 36 * 2*PI);
+		tmp(1) += r * sin(double(i) / 36 * 2*PI);
 		p.emplace_back(tmp);
 	}
 
 	for (int i = 1; i < 36; i++) {
 		Vector6d p_ = p[i];
 		SetRobotEndPos(p_(0), p_(1), p_(2), p_(3), p_(4), p_(5));
-		Vector6d j;
-		GetJointAngles(j(0), j(1), j(2), j(3), j(4), j(5));
+		Vector4d j;
+		GetJointAngles(j(0), j(1), j(2), j(3));
 		sendCmd(ser, j);
 		Sleep(500);
 	}
@@ -102,9 +105,9 @@ int main()
 	int send_len = 0;
 	int recv_len = 0;
 	//定义发送缓冲区和接受缓冲区
-    char send_buf[100] = {};
+	char send_buf[100] = {};
 	char recv_buf[200] = {};
-    string recvstr;
+	string recvstr;
 	//定义服务端套接字，接受请求套接字
 	SOCKET s_server;
 	//服务端地址客户端地址
@@ -125,21 +128,52 @@ int main()
 	}
 
 	//登录
-    send_len = send(s_server, "[1# System.Login 0]", 100, 0);
-    recv_len = recv(s_server, recv_buf, 100, 0);
-    cout << recv_buf << endl;
-    memset(recv_buf,'\0',sizeof(recv_buf));
-    Sleep(1200);
+	send_len = send(s_server, "[1# System.Login 0]", 100, 0);
+	recv_len = recv(s_server, recv_buf, 100, 0);
+	cout << recv_buf << endl;
+	memset(recv_buf, '\0', sizeof(recv_buf));
+	Sleep(1200);
 	//使能
-    send_len = send(s_server, "[2# Robot.PowerEnable 1,1]", 100, 0);
-    recv_len = recv(s_server, recv_buf, 200, 0);
-    recv_len = recv(s_server, recv_buf, 200, 0);
-    cout << recv_buf << endl;
-    memset(recv_buf, '\0', sizeof(recv_buf));
-    Sleep(1200);
+	send_len = send(s_server, "[2# Robot.PowerEnable 1,1]", 100, 0);
+	recv_len = recv(s_server, recv_buf, 200, 0);
+	recv_len = recv(s_server, recv_buf, 200, 0);
+	cout << recv_buf << endl;
+	memset(recv_buf, '\0', sizeof(recv_buf));
+	Sleep(1200);
 
 	//在此添加程序
-	send_len = send(s_server, "[3# Location p]", 100, 0);
+	//停止
+	send_len = send(s_server, "[3# System.Abort 1]", 100, 0);
+	recv_len = recv(s_server, recv_buf, 200, 0);
+	cout << recv_buf << endl;
+	memset(recv_buf, '\0', sizeof(recv_buf));
+	Sleep(1200);
+	//启动
+	send_len = send(s_server, "[4# System.Start 1]", 100, 0);
+	recv_len = recv(s_server, recv_buf, 200, 0);
+	cout << recv_buf << endl;
+	memset(recv_buf, '\0', sizeof(recv_buf));
+	Sleep(1200);
+	//Home
+	send_len = send(s_server, "[5# Robot.Home 1]", 100, 0);
+	recv_len = recv(s_server, recv_buf, 200, 0);
+	cout << recv_buf << endl;
+	memset(recv_buf, '\0', sizeof(recv_buf));
+	Sleep(1200);
+	//自动模式
+	send_len = send(s_server, "[6# System.Auto 1]", 100, 0);
+	recv_len = recv(s_server, recv_buf, 200, 0);
+	cout << recv_buf << endl;
+	memset(recv_buf, '\0', sizeof(recv_buf));
+	Sleep(1200);
+	//set speed
+	send_len = send(s_server, "[7# System.Speed 30]", 100, 0);
+	recv_len = recv(s_server, recv_buf, 200, 0);
+	cout << recv_buf << endl;
+	memset(recv_buf, '\0', sizeof(recv_buf));
+	Sleep(1200);
+
+	send_len = send(s_server, "[8# LocationJ j]", 100, 0);
 	recv_len = recv(s_server, recv_buf, 100, 0);
 	cout << recv_buf << endl;
 	memset(recv_buf, '\0', sizeof(recv_buf));
@@ -151,6 +185,8 @@ int main()
 	p3 << 213.430, -0.136, -17.354, 0, 180, -165.577;
 	center << 337.865, 23.742, -17.354, 0, 180, -152.259;
 	double r = 120;
+
+	drawCircle(s_server, center, r);
 
 	closesocket(s_server);
 	//释放DLL资源
