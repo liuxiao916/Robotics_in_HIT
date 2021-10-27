@@ -74,7 +74,7 @@ plot(tt5, df5(tt5), 'linewidth', 2);
 grid on;
 title('velocity');
 xlabel('t/s');
-ylabel('deg');
+ylabel('deg/s');
 
 %draw acc
 subplot(133);
@@ -87,7 +87,7 @@ plot(tt5, ddf5(tt5), 'linewidth', 2);
 grid on;
 title('acceleration');
 xlabel('t/s');
-ylabel('deg');
+ylabel('deg/s^2');
 
 
 
@@ -138,7 +138,7 @@ plot(x, polyval(dcubic2, x-td), 'linewidth', 2);
 grid on;
 title('velocity');
 xlabel('t/s');
-ylabel('deg');
+ylabel('deg/s');
 hold off;
 
 subplot(133);
@@ -152,5 +152,5 @@ plot(x, polyval(ddcubic2, x-td), 'linewidth', 2);
 grid on;
 title('acceleration');
 xlabel('t/s');
-ylabel('deg');
+ylabel('deg/s^2');
 hold off;
