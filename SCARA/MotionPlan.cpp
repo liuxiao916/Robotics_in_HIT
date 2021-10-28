@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "MotionPlan.h"
-#include "HLrobotconfig.h"
+#include "Srobotconfig.h"
 #include <algorithm>
 #include <Windows.h>
 #include "eigen3/Eigen/Dense"
@@ -156,15 +156,13 @@ void CHLMotionPlan::SetPlanPoints(PosStruct startPos, PosStruct endPos)
 	mEndMatrixData[15] = 1;
 
 	double angle1, angle2, angle3, angle4;
-	SRobot::SetRobotEndPos(startPos.x, startPos.y, startPos.z, startPos.yaw, startPos.pitch, startPos.roll);
+	SRobot::SetRobotEndPos(startPos.x, startPos.y, startPos.z, startPos.yaw, startPos.pitch,  startPos.roll);
 	SRobot::GetJointAngles(angle1, angle2, angle3, angle4);
 
 	mJointAngleBegin[0] = angle1;
 	mJointAngleBegin[1] = angle2;
 	mJointAngleBegin[2] = angle3;
 	mJointAngleBegin[3] = angle4;
-	mJointAngleBegin[4] = angle5;
-	mJointAngleBegin[5] = angle6;
 
 	SRobot::SetRobotEndPos(endPos.x, endPos.y, endPos.z, endPos.yaw, endPos.pitch, endPos.roll);
 	SRobot::GetJointAngles(angle1, angle2, angle3, angle4, angle5, angle6);
@@ -172,8 +170,6 @@ void CHLMotionPlan::SetPlanPoints(PosStruct startPos, PosStruct endPos)
 	mJointAngleEnd[1] = angle2;
 	mJointAngleEnd[2] = angle3;
 	mJointAngleEnd[3] = angle4;
-	mJointAngleEnd[4] = angle5;
-	mJointAngleEnd[5] = angle6;
 
 }
 
