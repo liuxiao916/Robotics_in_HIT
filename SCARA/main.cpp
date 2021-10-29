@@ -15,13 +15,13 @@ using namespace std;
 int main()
 {   //起始点
     PosStruct Start;
-    Start.x = 475.693; Start.y = -189.407; Start.z = 802.044;
-    Start.yaw = 4.221; Start.pitch = 169.075; Start.roll = -131.743;
+    Start.x = 415.402; Start.y = 196.478; Start.z = -17.354;
+    Start.yaw = 0; Start.pitch = 180; Start.roll = -149.424;
 
     //终止点
     PosStruct End;
-    End.x = 441.78; End.y = 86.9; End.z = 877.035;
-    End.yaw = 103.388; End.pitch = 170.195; End.roll = -90.995;
+    End.x = 409.694; End.y = -167.773; End.z = -17.354;
+    End.yaw = 0; End.pitch = 180; End.roll = -106.310;
 
     //梯型速度规划
     CHLMotionPlan trajectory1;

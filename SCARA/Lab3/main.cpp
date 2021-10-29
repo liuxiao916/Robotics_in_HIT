@@ -9,8 +9,8 @@ int main(int, char**) {
     double joint[4]={0};
     Matrix<double, 3, 4> q;
     //Robot::SetRobotEndPos(415.402,196.478,-17.354,0,180,-149.424);
-    //SRobot::SetRobotEndPos(213.430,-0.136,-17.354,0,180,-165.577);
-    SRobot::SetRobotEndPos(409.694, -167.773, -17.354, 0, 180, -106.310);
+    SRobot::SetRobotEndPos(213.430,-0.136,-17.354,0,180,-165.577);
+    //SRobot::SetRobotEndPos(475.693, -189.407, 802.044, 4.221, 169.075, -131.743); (error point)
     SRobot::GetJointAngles(joint[0],joint[1],joint[2],joint[3]);
     cout << joint[0] <<" " << joint[1] <<" " <<joint[2]<<" "<< joint[3]<<endl ;
 

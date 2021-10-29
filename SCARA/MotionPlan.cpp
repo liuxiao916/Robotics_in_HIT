@@ -3,11 +3,11 @@
 #include "MotionPlan.h"
 #include "Srobotconfig.h"
 #include <algorithm>
-#include <Windows.h>
 #include "eigen3/Eigen/Dense"
+#include <iomanip>
 
 using namespace std;
-using namespace HLRobot;
+using namespace SRobot;
 using namespace Eigen;
 
 /********************************************************************
@@ -165,7 +165,7 @@ void CHLMotionPlan::SetPlanPoints(PosStruct startPos, PosStruct endPos)
 	mJointAngleBegin[3] = angle4;
 
 	SRobot::SetRobotEndPos(endPos.x, endPos.y, endPos.z, endPos.yaw, endPos.pitch, endPos.roll);
-	SRobot::GetJointAngles(angle1, angle2, angle3, angle4, angle5, angle6);
+	SRobot::GetJointAngles(angle1, angle2, angle3, angle4);
 	mJointAngleEnd[0] = angle1;
 	mJointAngleEnd[1] = angle2;
 	mJointAngleEnd[2] = angle3;
@@ -215,31 +215,31 @@ void CHLMotionPlan::GetPlanPoints()
 		// cout << RotateAngle[i] << endl;
 
 		if (RotateAngle[i] > 0){
-			if (RotateAngle[i] > ((mAngleVel * mAngleVel) / (2 * mAngleAcc) + (mAngleVel * mAngleVel) / (2 * mAngleDec))){
-				time1[i] = mAngleVel / mAngleAcc;
-				time3[i] = mAngleVel / mAngleDec;
-				time2[i] = (RotateAngle[i] - ((mAngleVel * mAngleVel) / (2 * mAngleAcc) + (mAngleVel * mAngleVel) / (2 * mAngleDec))) / mAngleVel;
+			if (RotateAngle[i] > ((mVel * mVel) / (2 * mAcc) + (mVel * mVel) / (2 * mDec))){
+				time1[i] = mVel / mAcc;
+				time3[i] = mVel / mDec;
+				time2[i] = (RotateAngle[i] - ((mVel * mVel) / (2 * mAcc) + (mVel * mVel) / (2 * mDec))) / mVel;
 				time[i] = time1[i] + time2[i] + time3[i];
 			}
 			else{
-				vtemp = abs(sqrt((2 * mAngleAcc * mAngleDec * RotateAngle[i]) / (mAcc + mDec)));
-				time1[i] = vtemp / mAngleAcc;
-				time3[i] = vtemp / mAngleDec;
+				vtemp = abs(sqrt((2 * mAcc * mDec * RotateAngle[i]) / (mAcc + mDec)));
+				time1[i] = vtemp / mAcc;
+				time3[i] = vtemp / mDec;
 				time2[i] = 0;
 				time[i] = time1[i] + time2[i] + time3[i];
 			}
 		}
 		else if (RotateAngle[i] < 0){
-			if (-RotateAngle[i] > ((mAngleVel * mAngleVel) / (2 * mAngleAcc) + (mAngleVel * mAngleVel) / (2 * mAngleDec))){
-				time1[i] = mAngleVel / mAngleDec;
-				time3[i] = mAngleVel / mAngleAcc;
-				time2[i] = (-RotateAngle[i] - ((mAngleVel * mAngleVel) / (2 * mAngleAcc) + (mAngleVel * mAngleVel) / (2 * mAngleDec))) / mAngleVel;
+			if (-RotateAngle[i] > ((mVel * mVel) / (2 * mAcc) + (mVel * mVel) / (2 * mDec))){
+				time1[i] = mVel / mDec;
+				time3[i] = mVel / mAcc;
+				time2[i] = (-RotateAngle[i] - ((mVel * mVel) / (2 * mAcc) + (mVel * mVel) / (2 * mDec))) / mVel;
 				time[i] = time1[i] + time2[i] + time3[i];
 			}
 			else{
-				vtemp = abs(sqrt((2 * mAngleAcc * mAngleDec * -RotateAngle[i]) / (mAcc + mDec)));
-				time1[i] = vtemp / mAngleDec;
-				time3[i] = vtemp / mAngleAcc;
+				vtemp = abs(sqrt((2 * mAcc * mDec * -RotateAngle[i]) / (mAcc + mDec)));
+				time1[i] = vtemp / mDec;
+				time3[i] = vtemp / mAcc;
 				time2[i] = 0;
 				time[i] = time1[i] + time2[i] + time3[i];
 			}
@@ -275,7 +275,7 @@ void CHLMotionPlan::GetPlanPoints()
 				if (RotateAngle[i] > 0){
 					if (time2[i] > 0){
 						if (j <= (time1[i] / mSampleTime)){
-							nowV[i] = lastV[i] + mAngleAcc * mSampleTime;
+							nowV[i] = lastV[i] + mAcc * mSampleTime;
 							nowAngle[i] = lastAngle[i] + (nowV[i] + lastV[i]) * mSampleTime / 2;
 						}
 						else if (j > (time1[i] / mSampleTime) && j < ((time1[i] + time2[i]) / mSampleTime)){
@@ -283,7 +283,7 @@ void CHLMotionPlan::GetPlanPoints()
 							nowAngle[i] = lastAngle[i] + nowV[i] * mSampleTime;
 						}
 						else if (j > ((time1[i] + time2[i]) / mSampleTime) && j <= (time[i] / mSampleTime)){
-							nowV[i] = lastV[i] - mAngleDec * mSampleTime;
+							nowV[i] = lastV[i] - mDec * mSampleTime;
 							nowAngle[i] = lastAngle[i] + nowV[i] * mSampleTime;
 						}
 						else if (j > time[i] / mSampleTime){
@@ -292,11 +292,11 @@ void CHLMotionPlan::GetPlanPoints()
 					}
 					else if (time2[i] == 0){
 						if (j <= (time1[i] / mSampleTime)){
-							nowV[i] = lastV[i] + mAngleAcc * mSampleTime;
+							nowV[i] = lastV[i] + mAcc * mSampleTime;
 							nowAngle[i] = lastAngle[i] + (nowV[i] + lastV[i]) * mSampleTime / 2;
 						}
 						else if (j > (time1[i] / mSampleTime) && j <= (time[i] / mSampleTime)){
-							nowV[i] = lastV[i] - mAngleDec * mSampleTime;
+							nowV[i] = lastV[i] - mDec * mSampleTime;
 							nowAngle[i] = lastAngle[i] + (nowV[i] + lastV[i]) * mSampleTime / 2;
 						}
 						else if (j > time[i] / mSampleTime){
@@ -307,7 +307,7 @@ void CHLMotionPlan::GetPlanPoints()
 				else if (RotateAngle[i] < 0){
 					if (time2[i] > 0){
 						if (j <= (time1[i] / mSampleTime)){
-							nowV[i] = lastV[i] - mAngleDec * mSampleTime;
+							nowV[i] = lastV[i] - mDec * mSampleTime;
 							nowAngle[i] = lastAngle[i] + (nowV[i] + lastV[i]) * mSampleTime / 2;
 						}
 						else if (j > (time1[i] / mSampleTime) && j < ((time1[i] + time2[i]) / mSampleTime)){
@@ -315,7 +315,7 @@ void CHLMotionPlan::GetPlanPoints()
 							nowAngle[i] = lastAngle[i] + nowV[i] * mSampleTime;
 						}
 						else if (j > ((time1[i] + time2[i]) / mSampleTime) && j <= (time[i] / mSampleTime)){
-							nowV[i] = lastV[i] + mAngleAcc * mSampleTime;
+							nowV[i] = lastV[i] + mAcc * mSampleTime;
 							nowAngle[i] = lastAngle[i] + (nowV[i] + lastV[i]) * mSampleTime / 2;
 						}
 						else if (j > time[i] / mSampleTime){
@@ -324,11 +324,11 @@ void CHLMotionPlan::GetPlanPoints()
 					}
 					else if (time2[i] == 0){
 						if (j <= (time1[i] / mSampleTime)){
-							nowV[i] = lastV[i] - mAngleDec * mSampleTime;
+							nowV[i] = lastV[i] - mDec * mSampleTime;
 							nowAngle[i] = lastAngle[i] + (nowV[i] + lastV[i]) * mSampleTime / 2;
 						}
 						else if (j > (time1[i] / mSampleTime) && j <= (time[i] / mSampleTime)){
-							nowV[i] = lastV[i] + mAngleAcc * mSampleTime;
+							nowV[i] = lastV[i] + mAcc * mSampleTime;
 							nowAngle[i] = lastAngle[i] + (nowV[i] + lastV[i]) * mSampleTime / 2;
 						}
 						else if (j > time[i] / mSampleTime){
@@ -389,7 +389,7 @@ void CHLMotionPlan::GetPlanPoints_line()
 	//cout << length << endl;
 
 	ofstream outfile;		// 创建文件
-	outfile.open(filename);
+	outfile.open("mydata.txt");
 	outfile << setiosflags(ios::fixed) << setprecision(4) << startX << "  "
 		<< startY << "  "
 		<< startZ << "  "

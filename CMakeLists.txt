@@ -7,5 +7,5 @@ INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIR})
 include_directories(./SCARA)
 
 
-add_executable(Scara ./SCARA/main.cpp ./SCARA/Srobotconfig.cpp)
+add_executable(Scara ./SCARA/main.cpp ./SCARA/Srobotconfig.cpp ./SCARA/MotionPlan.cpp)
 
