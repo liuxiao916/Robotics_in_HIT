@@ -196,12 +196,11 @@ void CHLMotionPlan::GetPlanPoints()
 {
 	ofstream outfile;               			//创建文件
 	outfile.open("data.txt");
-	outfile << mJointAngleBegin[0] << "  "
+	outfile << std::setios 
+            << mJointAngleBegin[0] << "  "
 			<< mJointAngleBegin[1] << "  "
 			<< mJointAngleBegin[2] << "  "
-			<< mJointAngleBegin[3] << "  "
-			<< mJointAngleBegin[4] << "  "
-			<< mJointAngleBegin[5] << "  ";
+			<< mJointAngleBegin[3] << "  ";
 	outfile << endl;//保存初始的时间、六个关节角度
 
 	//完成代码
