@@ -358,7 +358,7 @@ void CHLMotionPlan::GetPlanPoints()
 
 }
 
-void CHLMotionPlan::GetPlanPoints_line()
+void CHLMotionPlan::GetPlanPoints_line(char* filename)
 {
 	//完成代码
     double length;
@@ -389,10 +389,10 @@ void CHLMotionPlan::GetPlanPoints_line()
 	//cout << length << endl;
 
 	ofstream outfile;		// 创建文件
-	outfile.open("mydata.txt");
-	outfile << setiosflags(ios::fixed) << setprecision(4) << startX << "  "
-		<< startY << "  "
-		<< startZ << "  "
+	outfile.open(filename);
+	outfile << setiosflags(ios::fixed) << setprecision(4) << startX*1000 << "  "
+		<< startY*1000 << "  "
+		<< startZ*1000 << "  "
 		<< startYaw << "  "
 		<< startPitch << "  "
 		<< startRoll << "  ";
@@ -474,9 +474,9 @@ void CHLMotionPlan::GetPlanPoints_line()
 		nowPitch = lastPitch + tempLength / length * (endPitch - startPitch);
 		nowRoll = lastRoll + tempLength / length * (endRoll - startRoll);
 
-		outfile << setiosflags(ios::fixed) << setprecision(4) << nowX << "  "
-				<< nowY << "  "
-				<< nowZ << "  "
+		outfile << setiosflags(ios::fixed) << setprecision(4) << nowX*1000 << "  "
+				<< nowY*1000 << "  "
+				<< nowZ*1000 << "  "
 				<< nowYaw << "  "
 				<< nowPitch << "  "
 				<< nowRoll << "  ";

@@ -25,52 +25,23 @@ int main(){
     Point[1].x = -80.413; Point[1].y = 278.104; Point[1].z = -704.883;
     Point[1].yaw = 0; Point[1].pitch = 180; Point[1].roll = -161.995;
 
-    Point[2].x = -160.413; Point[2].y = 238.104; Point[2].z = -704.883;
-    Point[2].yaw = 0; Point[2].pitch = 180; Point[2].roll = -161.995;
-
-    Point[3].x = -250.413; Point[3].y = 193.104; Point[3].z = -704.883;
-    Point[3].yaw = 0; Point[3].pitch = 180; Point[3].roll = -161.995;
-
-    Point[4].x = -65.413; Point[4].y = 438.104; Point[4].z = -704.883;
-    Point[4].yaw = 0; Point[4].pitch = 180; Point[4].roll = -161.995;
-
-    Point[5].x = -145.413; Point[5].y = 388.104; Point[5].z = -704.883;
-    Point[5].yaw = 0; Point[5].pitch = 180; Point[5].roll = -161.995;
-
-    Point[6].x = -230.414; Point[6].y = 343.104; Point[6].z = -704.883;
-    Point[6].yaw = 0; Point[6].pitch = 180; Point[6].roll = -161.995;
-
-    Point[7].x = -310.139; Point[7].y = 302.610; Point[7].z = -704.883;
-    Point[7].yaw = 0; Point[7].pitch = 180; Point[7].roll = -161.995;
-
-    int flag1 = 0;
-    int flag2 = 0;
-    
-    cout << "请选择抓取点：";
-    cin >> flag1;
-    cout << "已选择第" << flag1 << "个抓取点" << endl;
-
-    cout << "请选择放置点：";
-    cin >> flag2;
-    cout << "已选择第" << flag2 << "个放置点" << endl;
-
     PosStruct Start1;
     PosStruct Start2;
     PosStruct End1;
     PosStruct End2;
 
-    Start1.x = Point[flag1].x; Start1.y = Point[flag1].y; Start1.z = Point[flag1].z + 100;
-    Start1.yaw = 0; Start1.pitch = 180; Start1.roll = Point[flag1].roll;
-    Start2.x = Point[flag1].x; Start2.y = Point[flag1].y; Start2.z = Point[flag1].z;
-    Start2.yaw = 0; Start2.pitch = 180; Start2.roll = Point[flag1].roll;
-    End1.x = Point[flag2].x; End1.y = Point[flag2].y; End1.z = Point[flag2].z + 100;
-    End1.yaw = 0; End1.pitch = 180; End1.roll = Point[flag2].roll;
-    End2.x = Point[flag2].x; End2.y = Point[flag2].y; End2.z = Point[flag2].z;
-    End2.yaw = 0; End2.pitch = 180; End2.roll = Point[flag2].roll;
+    Start1.x = Point[0].x; Start1.y = Point[0].y; Start1.z = Point[0].z + 30;
+    Start1.yaw = 0; Start1.pitch = 180; Start1.roll = Point[0].roll;
+    Start2.x = Point[0].x; Start2.y = Point[0].y; Start2.z = Point[0].z;
+    Start2.yaw = 0; Start2.pitch = 180; Start2.roll = Point[0].roll;
+    End1.x = Point[1].x; End1.y = Point[1].y; End1.z = Point[1].z + 30;
+    End1.yaw = 0; End1.pitch = 180; End1.roll = Point[1].roll;
+    End2.x = Point[1].x; End2.y = Point[1].y; End2.z = Point[1].z;
+    End2.yaw = 0; End2.pitch = 180; End2.roll = Point[1].roll;
 
     // 梯型速度规划
     CHLMotionPlan trajectory1;
-    trajectory1.SetProfile(10, 10, 10, 10, 2, 2);
+    trajectory1.SetProfile(10, 10, 10);
     trajectory1.SetSampleTime(0.001);
     trajectory1.SetPlanPoints(Start1, Start2);
     trajectory1.GetPlanPoints_line("line1.txt");

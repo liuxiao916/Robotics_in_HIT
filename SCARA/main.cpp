@@ -29,5 +29,5 @@ int main()
     trajectory1.SetProfile(10, 10, 10);    //vel °/s， acc °/s.s, dec °/s.s
     trajectory1.SetSampleTime(0.001);      //s
     trajectory1.GetPlanPoints();           //关节空间梯形速度规划
-    trajectory1.GetPlanPoints_line();      //笛卡尔空间直线轨迹梯形速度规划
+    trajectory1.GetPlanPoints_line("data_line.txt");      //笛卡尔空间直线轨迹梯形速度规划
 }

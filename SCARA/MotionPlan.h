@@ -32,6 +32,6 @@ public:
 	void SetPlanPoints(PosStruct startPos, PosStruct endPos);		//输入起始点位和结束点位的笛卡尔坐标
 	void SetProfile(double vel, double acc, double dec);			//设置运动参数，速度、加速度和减速度
 	void GetPlanPoints();											//关节空间梯形速度规划
-	void GetPlanPoints_line();       								//笛卡尔空间直线轨迹梯形速度规划
+	void GetPlanPoints_line(char* filename);       								//笛卡尔空间直线轨迹梯形速度规划
 
 };
