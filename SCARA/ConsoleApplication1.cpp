@@ -19,11 +19,12 @@ void initialization();
 
 int main(){
     PosStruct Point[8];
-    Point[0].x = -0.413; Point[0].y = 328.104; Point[0].z = -704.883;
-    Point[0].yaw = 0; Point[0].pitch = 180; Point[0].roll = -161.995;
 
-    Point[1].x = -80.413; Point[1].y = 278.104; Point[1].z = -704.883;
-    Point[1].yaw = 0; Point[1].pitch = 180; Point[1].roll = -161.995;
+    Point[0].x = 340.17; Point[0].y = 143.21; Point[0].z = -90;
+    Point[0].yaw = 0; Point[0].pitch = 180; Point[0].roll = 67.645;
+
+    Point[1].x = 227.1; Point[1].y = -61.8; Point[1].z = -90;
+    Point[1].yaw = 0; Point[1].pitch = 180; Point[1].roll = 67.645;
 
     PosStruct Start1;
     PosStruct Start2;
